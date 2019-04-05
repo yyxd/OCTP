@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <title>index</title>
+
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/jquery.fullPage.css" />
+    <!--<link rel="stylesheet" href="../static/css/bootstrap.cerulean.min.css" />-->
+    <link rel="stylesheet" href="../static/css/charisma-app.css" />
+    <link rel="stylesheet" href="../static/css/main.css " />
+    <link rel="stylesheet" href="../static/css/talk.css" />
+
+    <!--script-->
+    <script src="../static/js/jquery-2.2.2.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <!-- This following line is optional. Only necessary if you use the option css3:false and you want to use other easing effects rather than "linear", "swing" or "easeInOutCubic". -->
+    <!--<script src="vendors/jquery.easings.min.js"></script>-->
+    <!-- This following line is only necessary in the case of using the plugin option `scrollOverflow:true` -->
+    <!--script type="text/javascript" src="vendors/scrolloverflow.min.js"></script>-->
+    <script type="text/javascript" src="../static/js/jquery.fullPage.js"></script>
+
+
+    <!--Favicon-->
+    <!--<link rel="icon" href="favicon.ico" type="image/x-icon" />-->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<body>
+
+    <nav class="navbar  navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="javascript:void(0)"><img alt="brand" src="../static/img/logo.png" /></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="javascript:void(0)">登录</a></li>
+                    <li><a href="javascript:void(0)">游客</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="#">首页</a></li>
+                    <li><a href="javascript:void(0)">新闻公告</a></li>
+                    <li><a href="javascript:void(0)">课程浏览</a></li>
+                    <li>
+                        <a href="javascript:void(0)">本科课程</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)">研究生课程</a>
+                    </li>
+                </ul>
+
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <br />
+    <br />
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left menu starts -->
+            <div class="col-sm-2 col-lg-2 sidebar">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li class="nav-header">
+                                <a class="ajax-link" href="Student/index.html">
+                                    <i class="glyphicon glyphicon-home"></i><span>我的主页</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="ajax-link" href="Student/Homework.html">
+                                    <i class="glyphicon glyphicon-book"></i><span>作业</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="ajax-link" href="Student/ResDownload.html">
+                                    <i class="glyphicon glyphicon-eye-open"></i><span>资源下载</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="ajax-link" href="Student/InfoModify.html">
+                                    <i class="glyphicon glyphicon-edit"></i><span>信息修改</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="ajax-link nav-active" href="Student/InfoModify.html">
+                                    <i class="glyphicon glyphicon-edit"></i><span>团队管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="ajax-link" href="Student/Communicate.html">
+                                    <i class="glyphicon glyphicon-globe"></i><span>在线交流</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+            <!-- left menu ends -->
+
+            <!--content-->
+            <div class="col-sm-10 col-lg-10 content">
+
+                <div class="container">
+                    <br />
+                    <!--nav row-->
+
+                    <div class="row">
+                        <ul class="nav nav-tabs">
+                            <li role="presentation" class="active">
+                                <a href="javascript:void(0)">查看团队</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="javascript:void(0)">创建团队</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="javascript:void(0)">团队审批</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--end nav-row-->
+
+                    <!-- veiw team row-->
+                    <div class="row show" id="view-team-div">
+                        <br/>
+                        <table class="table table-striped table-bordered table-head-emphasized">
+                            <tr>
+                                <th style="width: 10%">团队名称</th>
+                                <th style="width: 10%">队长姓名</th>
+                                <th style="width: 10%">队长学号</th>
+                                <th style="width: 40%">团队介绍</th>
+                                <th style="width: 10%">当前人数</th>
+                                <th style="width: 10%">团队状态</th>
+                                <th style="width: 10%">操作</th>
+                            </tr>
+
+                            <tr>
+                                <td>一颗赛艇</td>
+                                <td>陈煜</td>
+                                <td>13211017</td>
+                                <td>没什么好说的</td>
+                                <td>8</td>
+                                <td>团队正在创建
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" teamId="{{ team.id }}" class="btn-border-radius btn btn-primary btn-apply">申请加入
+                                        </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>五颗赛艇</td>
+                                <td>陈煜2</td>
+                                <td>13211017</td>
+                                <td>没什么好说的</td>
+                                <td>7</td>
+                                <td>团队正在创建
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" teamId="{{ team.id }}" class="btn-border-radius btn btn-primary btn-apply">申请加入
+                                        </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>一颗赛艇</td>
+                                <td>陈煜</td>
+                                <td>13211017</td>
+                                <td>没什么好说的</td>
+                                <td>8</td>
+                                <td>团队正在创建
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" teamId="{{ team.id }}" class="btn-border-radius btn btn-primary btn-apply">申请加入
+                                        </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>五颗赛艇</td>
+                                <td>陈煜2</td>
+                                <td>13211017</td>
+                                <td>没什么好说的</td>
+                                <td>7</td>
+                                <td>团队正在创建
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" teamId="{{ team.id }}" class="btn-border-radius btn btn-primary btn-apply">申请加入
+                                        </a>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <!--end view team row-->
+
+                    <!--create team row-->
+                    <div class="row hide" id="team-div">
+
+                        <table class="table table-striped table-bordered table-head-emphasized">
+                            <tr>
+                                <th>申请人学号</th>
+                                <th>申请人姓名</th>
+                                <th>申请团队名</th>
+                                <th>是否同意加入</th>
+                            </tr>
+
+                            <tr>
+                                <td>13211026</td>
+                                <td>刘京欣</td>
+                                <td>三颗赛艇</td>
+                                <td>
+                                    <div class="btn-group" applicantId="{{ applicant.id }}" role="group">
+                                        <button class="btn btn-success btn-border-radius agree btn-agree">同意</button>
+                                        <button class="btn btn-danger btn-border-radius agree btn-disagree">不同意</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>13211027</td>
+                                <td>朱运昌</td>
+                                <td>四颗赛艇</td>
+                                <td>
+                                    <div class="btn-group" applicantId="{{ applicant.id }}" role="group">
+                                        <button class="btn btn-success btn-border-radius agree btn-agree">同意</button>
+                                        <button class="btn btn-danger btn-border-radius agree btn-disagree">不同意</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>13211027</td>
+                                <td>朱运昌</td>
+                                <td>四颗赛艇</td>
+                                <td>
+                                    <div class="btn-group" applicantId="{{ applicant.id }}" role="group">
+                                        <button class="btn btn-success btn-border-radius agree btn-agree">同意</button>
+                                        <button class="btn btn-danger btn-border-radius agree btn-disagree">不同意</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <p>当前课程你没有管理的团队</p>
+                    </div>
+                    <!--end create team row-->
+
+                    <!--audit row-->
+                    <div class="row hide" id="audit-div">
+
+                        <br/>
+                        <h3 class="text-warning">您当前课程有已加入团队，不能够再创建团队!</h3>
+                        <h3 class="text-warning">您当前正在申请其他团队,请等待审批</h3>
+                        <div>
+                            <form class="form-horizontal post-form" method="post">
+                                <div class="form-group">
+                                    <label for="teamName" class="col-sm-2 col-md-2 col-lg-2 control-label">团队名称</label>
+                                    <div class=" col-sm-6 col-md-6 col-lg-6">
+                                        <input class="form-control" id="teamName" name="teamName" type="text" placeholder="团队名称" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="teamIntroduction" class="col-sm-2 col-md-2 col-lg-2 control-label">团队介绍</label>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <textarea class="form-control" id="teamIntroduction" name="teamIntroduction" cols="40" rows="8" placeholder="团队介绍" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-2 col-md-2 col-lg-2"></div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <input class="btn btn-primary" id="createTeam" type="submit" value="创建团队" />
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <br/>
+                    </div>
+                    <!--end audit row-->
+
+
+                    <script>
+                        $("#createTeam").click(function() {
+
+                            if ($("#teamName").val() == "")
+                                return false;
+                            else if ($("#teamIntroduction").val() == "")
+                                return false;
+                            else {
+                                $.ajaxSetup({
+                                    dataType: "json",
+                                    beforeSend: function(xhr, settings) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    }
+                                });
+                                var data = {
+                                    teamName: $("#teamName").val(),
+                                    teamIntroduction: $("#teamIntroduction").val()
+                                };
+                                $.ajax({
+                                    type: "post",
+                                    url: "../create/",
+                                    data: data,
+                                    success: function(response) {
+                                        console.log(response);
+                                        alert("创建成功");
+                                        window.location.reload()
+                                    },
+                                    error: function(response) {
+                                        console.log(response);
+                                        alert("系统繁忙");
+                                    }
+                                });
+                                return false;
+                            }
+                        });
+
+
+                        var $viewTeamTab = $(".nav-tabs > li").eq(0);
+                        var $auditTab = $(".nav-tabs > li").eq(1);
+                        var $createTeamTab = $(".nav-tabs > li").eq(2);
+
+                        //console.log($viewTeamTab);console.log($auditTab);console.log($createTeamTab);
+
+                        var $viewTeamBlock = $("#view-team-div");
+                        var $auditBlock = $("#audit-div");
+                        var $createTeamBlock = $("#team-div");
+
+                        //console.log($viewTeamBlock);console.log($auditBlock);console.log($createTeamBlock);
+
+
+                        $(".nav-tabs > li > a").eq(0)[0].onclick = function() {
+                            showBlock($viewTeamTab, $auditTab, $createTeamTab, $viewTeamBlock, $auditBlock, $createTeamBlock);
+                        }
+                        $(".nav-tabs > li > a").eq(1)[0].onclick = function() {
+                            showBlock($auditTab, $viewTeamTab, $createTeamTab, $auditBlock, $viewTeamBlock, $createTeamBlock);
+                        }
+                        $(".nav-tabs > li > a").eq(2)[0].onclick = function() {
+                            showBlock($createTeamTab, $auditTab, $viewTeamTab, $createTeamBlock, $auditBlock, $viewTeamBlock);
+                        }
+
+
+                        function showBlock(showTab, hideTab1, hideTab2, showBlock, hideBlock1, hideBlock2) {
+                            if (!showTab.hasClass("active")) {
+                                showTab.addClass("active");
+                                hideBlock1.removeClass("show");
+                                hideBlock2.removeClass("show");
+                                hideBlock1.addClass("hide");
+                                hideBlock2.addClass("hide");
+                            }
+                            if (hideTab1.hasClass("active")) hideTab1.removeClass("active");
+                            if (hideTab2.hasClass("active")) hideTab2.removeClass("active");
+                            if (!showBlock.hasClass("show")) {
+                                showBlock.addClass("show");
+                            }
+                        }
+
+
+                        /*团队申请处理*/
+                        var btnApplyList = document.querySelectorAll(".btn-apply");
+                        console.log("apply length is:"+btnApplyList.length);
+                        var length = btnApplyList.length;
+
+                        for (var i = 0; i < length; i++) {
+                            btnApplyList[i].onclick = function() {
+                                var btn = event.srcElement;
+                                var teamId = btn.teamid;
+                                var teamId = btn.getAttribute("teamid");
+                                $.ajaxSetup({
+                                    dataType: "json",
+                                    beforeSend: function(xhr, settings) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    }
+                                });
+                                $.ajax({
+                                    type: "POST",
+                                    url: "../apply/",
+                                    data: {
+                                        team_id: teamId
+                                    },
+                                    success: function(data) {
+                                        alert(data.message);
+                                        $(this)[0].style.pointerEvents = "none";
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        console.table([{
+                                            "错误类型": jqXHR,
+                                            "错误信息": textStatus,
+                                            "http状态": errorThrown
+                                        }]);
+                                    }
+                                });
+                            }
+                        }
+
+
+                        /*团队审批操作*/
+                        //var isAgreeBtnList = $(".btn-is-agree")[0];
+                        var isAgreeBtnList=document.querySelectorAll(".agree");
+                        //var isAgreeBtnList = $(".is-agree")[0];
+
+                        var len = isAgreeBtnList.length;
+                        console.log("is agreeBtnList length is:" + len);
+                        //console.log(isAgreeBtnList[3]);
+
+                        for (var i = 0; i < length; i++) {
+                            isAgreeBtnList[i].onclick = function() {
+                                var btn = event.srcElement;
+                                var status = 0;
+                                console.log("is checking button:" + btn);
+                                status = $(btn).hasClass(".btn-agree") ? 1 : 0;
+                                var row = $(btn).parent().parent().parent().index();
+                                //var applicantId = $(this).parent()[0].applicantId;
+                                var applicantId = $(btn).parent()[0].getAttribute("applicantId");
+
+                                console.log(row);
+                                console.log("getting id:" + applicantId);
+                                $.ajaxSetup({
+                                    dataType: "json",
+                                    beforeSend: function(xhr, settings) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    }
+                                });
+                                $.ajax({
+                                    type: "POST",
+                                    url: "../check/",
+                                    data: {
+                                        applicant_id: applicantId,
+                                        status: status
+                                    },
+                                    success: function(data) {
+                                        alert(data.message);
+                                        //$(this)[0].style.pointerEvents = "none";
+                                        //$(this).parent().children().eq(1)[0].style.pointerEvents = "none";
+                                        var tr = $($("#team-div table")[0].rows[row]).remove();
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        console.table([{
+                                            "错误类型": jqXHR,
+                                            "错误信息": textStatus,
+                                            "http状态": errorThrown
+                                        }]);
+                                    }
+                                });
+
+                            }
+                        }
+                    </script>
+                </div>
+                <!--end content-->
+
+
+            </div>
+
+        </div>
+
+
+</body>
+
+</html>

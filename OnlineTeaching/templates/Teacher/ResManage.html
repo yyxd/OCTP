@@ -1,0 +1,199 @@
+{% extends "Teacher/index.html" %}
+
+{% block navResManage %}
+    <a class="ajax-link nav-active" href="{% url 'resources' cid %}">
+        <i class="glyphicon glyphicon-eye-open"></i><span>资源管理</span>
+    </a>
+{% endblock navResManage %}
+
+{% block teacher %}
+    <div class="col-sm-10 col-lg-10 content">
+
+        <h3 class="text-primary" style="float: left;">课程资源</h3>
+        <br/>
+        <button class="btn btn-primary" id="batchDownload" onclick="batchDownload('chkSon')" style="float: right;">
+            下载所选
+        </button>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>
+                    <label for="chkAll"><a>全选</a></label>
+                    <input name="chkAll" id="chkAll" title="全选" onClick="ChkAllClick('chkSon','chkAll')" type="checkbox"
+                           hidden/>
+                    <label for="chkOpposite"><a>反选</a></label>
+                    <input name="chkOpposite" id="chkOpposite" title="反选" onClick="ChkOppClick('chkSon')"
+                           type="checkbox" hidden/>
+                </th>
+                <th>资源名</th>
+                <th>上传者</th>
+                <th>最后修改时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for resource in resources %}
+                <tr>
+                    <td>
+                        <input name="chkSon" id="{{ resource.id }}" type="checkbox"
+                               value="{{ resource.course.resourcesPath }}{{ resource.filename }}"
+                               onclick="ChkSonClick('chkSon','chkAll')"/>
+                    </td>
+                    <td><a class="res-name"
+                           href="{{ resource.course.resourcesPath }}{{ resource.filename }}">{{ resource.filename }}</a>
+                    </td>
+                    <td>{{ resource.uploader.Name }}</td>
+                    <td>{{ resource.updateTime }}</td>
+                    <td>
+                        <button type="button" class="btn btn-link" value="delete" onclick="del(this,{{ resource.id }})">
+                            删除
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <input class="btn btn-default" id="resource" name="resource" type="file" style="float: left;"/>
+        <button class="btn btn-primary" id="upload" name="upload" style="float: left;margin-right: 1%">上传</button>
+    </div><!--end content-->
+
+    <script>
+        $(document).ready(function () {
+            $("#upload").click(function () {
+                if ($("#resource").val() == "") {
+                    alert("请选择文件");
+                    return false;
+                }
+                else {
+                    $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        }
+                    });
+                    var fileData = new FormData();
+                    {#                TODO 现在只能上传单个文件#}
+                    fileData.append('resource', $('#resource')[0].files[0]);
+                    $.ajax({
+                        url: '{% url "upload_resources" cid %}',
+                        type: 'POST',
+                        cache: false,
+                        data: fileData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            console.log(response);
+                            var result = response.result;
+                            if (result == 1) {
+                                alert("上传成功");
+                                location.reload();
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function (response) {
+                            console.log(response);
+                            alert("系统繁忙");
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+
+        function del(obj, rid) {
+            //确认是否删除
+            var confirmation = confirm('资源将被删除，是否确认？');
+            if (confirmation == true) {
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    data: {},
+                    url: "/teacher/course/{{ cid }}/resources/" + rid + "/delete",
+                    success: function (response) {
+                        console.log(response);
+                        if (response.result == 1) {
+                            var tr = obj.closest("tr");//得到按钮[obj]的父元素[td]的父元素[tr]
+                            tr.parentNode.removeChild(tr);//从tr的父元素[tbody]移除tr
+                        } else {
+                            alert(response.error)
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
+        }
+
+        function ChkAllClick(sonName, cbAllId) {
+            var arrSon = document.getElementsByName(sonName);
+            var cbAll = document.getElementById(cbAllId);
+            var tempState = cbAll.checked;
+            for (var i = 0; i < arrSon.length; i++) {
+                if (arrSon[i].checked != tempState)
+                    arrSon[i].checked = true;
+            }
+        }
+
+        function ChkSonClick(sonName, cbAllId) {
+            var arrSon = document.getElementsByName(sonName);
+            var cbAll = document.getElementById(cbAllId);
+            for (var i = 0; i < arrSon.length; i++) {
+                if (!arrSon[i].checked) {
+                    cbAll.checked = false;
+                    return;
+                }
+            }
+            cbAll.checked = true;
+        }
+
+        function ChkOppClick(sonName) {
+            var arrSon = document.getElementsByName(sonName);
+            for (var i = 0; i < arrSon.length; i++) {
+                arrSon[i].click();
+            }
+        }
+
+        function batchDownload(sonName) {
+            var files = document.getElementsByName(sonName);
+            var index = 0;
+            var fileList = [];
+            console.log(files.length);
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].checked) {
+                    fileList[index++] = files[i].value;
+                }
+            }
+            console.log(JSON.stringify(fileList));
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            });
+            $.ajax({
+                type: "post",
+                url: "{% url 'batch_download' %}",
+                data: {links: JSON.stringify(fileList)},
+                success: function (response) {
+                    console.log(response);
+                    var result = response.result;
+                    if (result == 1) {
+                        window.open(response.zipLink, '_self')
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    alert("系统繁忙");
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

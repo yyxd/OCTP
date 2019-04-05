@@ -1,0 +1,37 @@
+{% extends "Teacher/index.html" %}
+
+{% block navHwCorrect %}
+    <a class="ajax-link nav-active" href="{% url 'homework_list' cid %}">
+        <i class="glyphicon glyphicon-list-alt"></i><span>作业批改</span>
+    </a>
+{% endblock navHwCorrect %}
+
+{% block teacher %}
+    <div class="col-sm-10 col-lg-10 content">
+        <h3 class="text-primary">已截止作业</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>标题</th>
+                <th>形式</th>
+                <th>截至时间</th>
+                <th>开始时间</th>
+                <th>提交数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for homework in revisable_homework %}
+                <tr>
+                    <td>{{ homework.id }}</td>
+                    <td><a href="{% url 'homework_mark' cid homework.id %}">{{ homework.Heading }}</a></td>
+                    <td>{{ homework.Type }}</td>
+                    <td>{{ homework.EndTime }}</td>
+                    <td>{{ homework.StartTime }}</td>
+                    <td>{{ homework.get_submission_num }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

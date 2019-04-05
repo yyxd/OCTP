@@ -1,0 +1,11 @@
+{% extends "Teacher/index.html" %}
+
+{% block navCommunicate %}
+    <a class="ajax-link nav-active" href="{% url 'CIM' cid %}">
+        <i class="glyphicon glyphicon-list-alt"></i><span>在线交流</span>
+    </a>
+{% endblock navCommunicate %}
+
+{% block teacher %}
+    {% include "Module/talk.html" %}
+{% endblock teacher %}

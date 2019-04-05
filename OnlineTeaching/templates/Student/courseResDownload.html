@@ -1,0 +1,83 @@
+{% extends "Student/CourseIndex.html" %}
+
+{% block navCourseResDownload %}
+    <a class="ajax-link nav-active" href="{% url "view_resources" cid %}">
+        <i class="glyphicon glyphicon-eye-open"></i><span>课程资源</span>
+    </a>
+{% endblock navCourseResDownload %}
+
+{% block course %}
+
+    <div id="res-list-div">
+        <h3 class="text-primary">资源下载</h3>
+        <button class="btn btn-primary" id="download-all">批量下载</button>
+        <table class="table table-striped table-bordered table-head-emphasized" id="res-list-table">
+            <tr>
+                <th>选择</th>
+                <th>资源名</th>
+                <th>上传者</th>
+                <th>最后修改时间</th>
+                <th>操作</th>
+            </tr>
+            {% for res in resList %}
+                <tr>
+                    <td><input type='checkbox' class='check'></td>
+                    <td>{{ res.filename }}</td>
+                    <td>{{ res.uploadername }}</td>
+                    <td>{{ res.updatetime }}</td>
+                    <td><a class='btn btn-link' href="{{ res.path }}">下载</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        $("#download-all").click(
+                function () {
+                    var index = 0;
+                    var linkList = new Array();
+                    var checkboxList = document.querySelectorAll(".check");
+                    var length = checkboxList.length;
+                    for (var i = 0; i < length; i++) {
+                        if ($(checkboxList[i]).is(":checked")) {
+                            var cell = $(checkboxList[i]).parent();
+                            var row = $(cell).parent().index();//行号
+                            var dlCell = $("#res-list-table")[0].rows[row].cells[4];
+                            var dlBtn = $(dlCell).children()[0];
+                            linkList[index++] = dlBtn.href;
+                        }
+                    }
+                    console.log(linkList);
+
+                    $.ajaxSetup({
+                        dataType: "json",
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                    });
+
+                    var jsonLinks = JSON.stringify(linkList);
+                    $.ajax({
+                        type: "POST",
+                        url: "/student/download_many",
+                        data: {Links: jsonLinks},
+                        success: function (data) {
+
+                            window.open(data.ziplink, '_self');
+                            console.log(data);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.table([{
+                                "错误类型": jqXHR,
+                                "错误信息": textStatus,
+                                "http状态": errorThrown
+                            }])
+                        }
+                    })
+                }
+        );
+    </script>
+
+
+{% endblock course %}

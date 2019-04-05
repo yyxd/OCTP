@@ -1,0 +1,11 @@
+{% extends "Student/CourseIndex.html" %}
+
+{% block navCourseCommunicate %}
+  <a class="ajax-link nav-active" href="{% url 'course_communicate' cid %}">
+      <i class="glyphicon glyphicon-list-alt"></i><span>在线交流</span>
+  </a>
+{% endblock navCourseCommunicate %}
+
+{% block course %}
+  {% include "Module/talk.html" %}
+{% endblock course %}

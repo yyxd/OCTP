@@ -1,0 +1,133 @@
+<div class="wrap" style="margin-top:-45px;">
+    <div class="left">
+        <div class="dialog_header header">
+            <span class="owner_image">
+                <img RCTarget="owner.portrait" onerror="this.src='/static/img/communicate/personPhoto.png'"/>
+            </span>
+            <span class="owner_name" id="user-info" userId="{{ userId }}" userName="{{ userName }}"
+                  token="{{ userToken }}" RCTarget="owner.name"></span>
+            <span class="setting">
+                <a href="javascript:void(0)" id="setting"><label></label> </a>
+            </span>
+        </div>
+        <div class="phone_dialog_header header">
+            <span class="logOut">
+                <a href="javascript:void(0)" ng-click="logout()" title="退出"></a>
+            </span>
+            <span class="addrBtnBack btnBack">
+                <a href="javascript:void(0)" title="返回">＜ 返回</a>
+            </span>
+            <span class="addrBtn">
+                <a href="javascript:void(0)" title="联系人"></a>
+            </span>
+        </div><!--end header-->
+        <div class="settingView">
+            <!--<span class="volSetting"><span class="hover" id="createDiscussion">创建讨论组</span></span>-->
+            <hr>
+            <span class="volSetting"><span class="hover" id="closeVoice">关闭声音</span></span>
+            <hr>
+            <span class="logOut"><span id="close" class="hover">退出登录</span></span>
+        </div><!--end settingView-->
+
+        <div class="listOperatorContent">
+            <div class="addrBtn selected">
+                <a href="javascript:void(0)" title="通讯录"><span></span></a>
+            </div>
+            <div class="cutOffRule" style="width: 2px;"></div>
+            <div class="conversationBtn">
+                <a href="javascript:void(0)" title="聊天">
+                    <span><font id="totalunreadcount" class="msgNum"></font></span>
+                </a>
+            </div>
+        </div><!--end list OperatorContent-->
+
+        <div class="listConversation list">
+            <ul id="conversationlist"></ul>
+        </div><!--end listConversation-->
+
+        <div class="listAddr list">
+            <!--<div class="nameInitials">群组</div>
+            <ul>
+                <li targetId="group001" targetName="高数讨论组" targetType="3">
+                    <span class="user_img"><img src="/static/img/communicate/math.png"/></span>
+                    <span class="user_name">高数讨论组</span>
+                </li>
+            </ul>-->
+            <div class="nameInitials">聊天室</div>
+            <ul id="discussionRoom">
+                <!--<li targetId="chatroom001" targetName="高数讨论组" targetType="0">
+                    <span class="user_img"><img src="/static/img/communicate/math.png"/></span>
+                    <span class="user_name">高数讨论组</span>
+                </li>-->
+                <li id="course-info" targetId="{{ courseId }}" targetName="{{ courseName }}" targetType="3">
+                    <span class="user_img"><img src="/static/img/communicate/math.png"/></span>
+                    <span class="user_name">{{ courseName }}</span>
+                </li>
+            </ul>
+            <div class="nameInitials">学生列表</div>
+            <ul id="friendsList">
+                {% for student in studentList %}
+                    <li targetId="{{ student.userId }}" targetName="{{ student.userName }}" targetType="0">
+                        <span class="user_img"><img src="/static/img/communicate/user_img.jpg"/></span>
+                        <span class="user_name">{{ student.userName }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="nameInitials">教师列表</div>
+            <ul id="friendsList">
+                {% for teacher in teacherList %}
+                    <li targetId="{{ teacher.userId }}" targetName="{{ teacher.userName }}" targetType="0">
+                        <span class="user_img"><img src="/static/img/communicate/user_img.jpg"/></span>
+                        <span class="user_name">{{ teacher.userName }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div><!--end listAddr-->
+    </div><!--end left-->
+
+    <div class="right_box">
+        <div class="right" style="position: relative">
+            <div class="dialog_box_header header">
+                <a href="javascript:void(0)" class="btnBack">＜ 返回 <label></label></a>
+                <span id="conversationTitle"></span>
+            </div>
+            <div id="notice"
+                 style="z-index: 1000;display: none;width: 100%;height: 30px;background: #ffffff;position: absolute;border: solid 1px #ccc;text-align: center;line-height: 30px;">
+
+            </div>
+            <div class="dialog_box">
+
+            </div>
+            <div class="msg_box">
+                <div class="features">
+                    <span class="expression">
+                        <a href="javascript:void(0)" id="RongIMexpression" title="表情"></a>
+                    </span>
+                </div>
+                <div class="input_box">
+                    <div class="button_box">
+                        <div id="expresscontent"></div>
+                        <span><button id="send">发送</button></span>
+                        <span><font>Ctrl + Enter</font></span>
+                    </div>
+                    <div class="text_box">
+                        <textarea class="textarea" id="mainContent" style="resize: none"></textarea>
+                    </div>
+                </div>
+                <div class="RongIMexpressionWrap"></div>
+            </div>
+        </div>
+    </div><!--end right-->
+
+</div>
+
+<!--<script src='static/js/jquery-1.8.2.min.js'></script>-->
+<script src='/static/js/jquery.nicescroll.js?v=2'></script>
+<!--<script src="http://res.websdk.rongcloud.net/RongIMClient.js"></script>-->
+<script src="http://res.websdk.rongcloud.cn/RongIMClient-0.9.11.min.js"></script>
+<script src="/static/js/engine.js"></script>
+<script src="http://res.websdk.rongcloud.cn/RongIMClient.voice-0.9.1.min.js"></script>
+<script src="http://res.websdk.rongcloud.cn/RongIMClient.emoji-0.9.2.min.js"></script>
+<script src="/static/js/common.js"></script>
+<audio style="width: 0px;height: 0px;display: none;" src="/static/img/communicate/sms-received.mp3" controls="controls">
+</audio>

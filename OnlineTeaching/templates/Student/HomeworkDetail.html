@@ -1,0 +1,269 @@
+{% extends "Student/index.html" %}
+
+{% block navHomework %}
+    <a class="ajax-link nav-active" href="{% url 'view_homeworks' %}">
+        <i class="glyphicon glyphicon-eye-open"></i><span>我的作业</span>
+    </a>
+{% endblock navHomework %}
+{% block student %}
+
+    <div class="container" homework-detail>
+        <div class="row">
+            <h4 class="text-primary">作业详情</h4>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">标题</label>
+                <p class="col-lg-7" id="homework-title" hId="{{ homework.id }}">{{ homework.Heading }}</p>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">提交开始日期</label>
+                <p class="col-lg-7">{{ homework.StartTime }}</p>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">提交截止日期</label>
+                <p class="col-lg-7" id="end-date">{{ homework.EndTime }}</p>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">状态</label>
+                {% if homework.type == 1 %} <p class="status col-lg-7">作业尚未开始</p>{# 未开始的作业 #}
+                {% elif homework.type == 2 %}<p class="status col-lg-7 text-success">你已提交作业啦</p> {# 开始且已提交 #}
+                {% elif homework.type == 3 %}<p class="status col-lg-7 text-warning">作业尚未提交,赶紧提交吧</p>{# 开始但未提交 #}
+                {% elif homework.type == 4 %}<p class="status col-lg-7 text-danger"> 作业都结束了,你还没交作业,我没你这种不爱学习的朋友</p>
+                    {# 结束未提交 #}
+                {% elif homework.type == 5 %}<p class="status col-lg-7 text-info">作业结束且已提交</p>{# 结束已提交 #}
+                {% endif %}
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">作业类型</label>
+                <p class="col-lg-7" id="end-date">{{ homework.Type }}作业</p>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">作业总分</label>
+                <p class="col-lg-7" id="end-date">{{ homework.FullMark }}</p>
+            </div>
+
+        </div>
+        <hr/>
+        <div class="row">
+            <h4 class="text-primary">作业描述</h4>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <p class="description">
+                    {{ homework.Description }}
+                </p>
+            </div>
+            <div class="col-lg-1"></div>
+        </div><!--end description div row-->
+        <hr/>
+
+        <div class="row">
+            <h4 class="text-primary">作业附件</h4>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <a href="{{ assignment.AttachmentUrl }}">{{ assignment.name }}</a>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+        <hr/>
+
+        <div class="row" {% if homework.Status == 0 %} style="display: none" {% endif %}>
+            <h4 class="text-primary">作业提交</h4>
+            <div class="col-lg-10" {% if homework.Status != 1 %} style="display: none" {% endif %}>
+                <label class="col-lg-3 text-primary"> 上传作业 </label>
+                <div class="col-lg-7">
+                    <input {% if homework.Status != 1 %} disabled="disabled" {% endif %} class="btn btn-default btn-sm" id="attachment" name="attachment" type="file"
+                           style="float: left;"/>
+                    <a {% if homework.Status != 1 %} disabled="disabled" {% endif %} class="btn btn-default btn-sm" id="uploadfile" name="upload" style="float: right;">上传</a>
+                </div>
+            </div>
+            <div  style="height: 10px" class="col-lg-10" ></div>
+            <div {% if homework.Status == 0 %} style="display: none" {% endif %}class="col-lg-10">
+                <label class="col-lg-3 text-primary"> 已上传作业 </label>
+                <div class="col-lg-7" id="tohide"
+                     style="{% if commitPath %}display:block {% else %}display:none{% endif %}">
+                    <a id="former_homeworkfile" name="former_homeworkfile" style="float:left"
+                       href="{{ commitPath }}">{{ commitName }}</a>
+                    <button type="button" {% if homework.Status != 1 %} style="display: none" {% endif %}
+                            class="btn btn-default btn-sm" id="delete" name="delete"
+                            style="float:right">删除
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-10" style="height: 10px"></div>
+            <div class="col-lg-10">
+                <div class="col-lg-6">
+                    <input id="uploadhmwk" type="button" {% if homework.Status != 1 %} style="display: none" {% endif %} class="btn btn-primary btn-border-radius"
+                           {% if type == 3 %}value="提交作业"
+                           {% else %}value="重新提交"{% endif %}/>
+                </div>
+
+            </div>
+        </div>
+            <hr {% if homework.Status == 0 %} style="display: none" {% endif %}/>
+            {% if homework.type == 5 %}
+            <div class="row">
+                <h4 class="text-primary">批改情况</h4>
+                <div class="col-lg-10" style="height: 10px"></div>
+                {% if score != None %}
+                    <div class="col-lg-10">
+                        <label class="text-primary col-lg-3">教师评分</label>
+                        <p class="is-comment col-lg-7">{{ score }}</p>
+                    </div>
+                    <div class="col-lg-10" style="height: 10px"></div>
+                    <div class="col-lg-10">
+                        <label class="text-primary col-lg-3">教师评语</label>
+                        <p class="is-comment col-lg-7">{{ comment }}</p>
+                    </div>
+                {% else %}
+                    <div class="col-lg-10">
+                    <p class="text-primary">暂未批改,请耐心等待</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    <script type="text/javascript">
+        var hmwkId = $("#homework-title").attr("hId");
+        console.log(hmwkId);
+        $("#uploadfile").click(function () {
+            if ($("#attachment").val() == "") {
+                alert("请选择文件");
+                return false;
+            }
+            else {
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                var fileData = new FormData();
+                {#                TODO 现在只能上传单个文件#}
+                fileData.append('hmwkfile', $('#attachment')[0].files[0]);
+                console.log(fileData);
+
+                $.ajax({
+                    url: '/student/upload_homeworks/' + hmwkId,
+                    type: 'POST',
+                    cache: false,
+                    dataType: 'JSON',
+                    data: fileData,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    timeout: 1000,
+                    success: function (response) {
+                        var result = response.status;
+                        if (result == "success") {
+                            alert("上传成功");
+                            fileName = response.fileName;
+                            console.log(response.fileUrl);
+                            $("#former_homeworkfile").html(response.fileName);
+                            $("#former_homeworkfile").attr("href", response.fileUrl);
+                            $("#tohide").attr("style", "display:block");
+                        } else {
+                            alert(response.info);
+                        }
+                    },
+                    error: function (response) {
+                        {#                            console.log(response);#}
+                        alert(response.info);
+                    }
+                });
+                return false;
+            }
+        });
+        $("#uploadhmwk").click(function () {
+
+            var hmwkfile = $('#attachment').val();
+            console.log(hmwkfile);
+            var pos = hmwkfile.lastIndexOf("\\");
+            var filename = hmwkfile.substring(pos + 1);
+            console.log(filename);
+
+            if ($("#attachment").val() == "") {
+                alert("请上传作业");
+                return false;
+            }
+            else {
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "/student/commit_homeworks",
+                    data: {
+                        hId: hmwkId,
+                        name: filename,
+                    },
+                    success: function (data) {
+                        var result = data.status;
+                        console.log(data)
+                        if (result == "success") {
+                            $("#commit-status").html("已提交");
+                        } else {
+                            alert(data.info);
+                            $("#commit-status").html("未提交");
+                        }
+                    },
+                    error: function (response) {
+                        alert("未知错误");
+                        $("#commit-status").html("未提交");
+                    }
+                });
+            }
+        });
+        $("#delete").click(function () {
+            //确认是否删除
+            var confirmation = confirm('已有附件将被删除，是否确认？');
+            if (confirmation == true) {
+                //后台数据删除功能
+                console.log($("#former_homeworkfile").attr("href"));
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    timeout: 1000,
+                    data: {
+                        fileUrl: $("#former_homeworkfile").attr("href")
+                    },
+                    url: '{% url 'delete_homework' cid %}',
+                    success: function (response) {
+                        console.log(response);
+                        if (response.status == "success") {
+                            fileName = '';
+                            $("#tohide").attr("style", "display:none");
+                            $("#former_homeworkfile").html(response.fileName);
+                            $("#former_homeworkfile").attr("href", "");
+                            $("#attachment").val("")
+                        } else {
+                            alert(response.info);
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response);
+                        console.log(response.info);
+                    }
+                });
+            }
+        });
+        /*if({{ homework.Status }} !=1){
+         var attchment=$("#attachment")[0];
+         console.log(attchment);
+         attchment.disabled="disabled";
+         var uploadBtn=$("#uploadfile")[0];
+         uploadBtn.style.pointerEvents="none";
+         var uploadHwBtn=$("#uploadhmwk")[0];
+         uploadHwBtn.style.pointerEvents="none";
+         }*/
+    </script>
+
+
+
+{% endblock student %}

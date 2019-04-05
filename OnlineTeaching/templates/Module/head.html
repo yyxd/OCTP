@@ -1,0 +1,112 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}在线协同教学平台{% endblock title %}
+    </title>
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="/static/css/communicate.css" />
+    <link rel="stylesheet" href="/static/css/animation.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <!--<link rel="stylesheet" href="/static/css/jquery.fullpage.css"/>-->
+    <link rel="stylesheet" href="/static/css/jquery.fullpage.min.css"/>
+    <link rel="stylesheet" href="/static/css/charisma-app.css"/>
+    <link rel="stylesheet" href="/static/css/main.css "/>
+    <!--<link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.css"/>-->
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="/static/css/talk.css"/>
+
+
+    <!--script-->
+    <script src="/static/js/jquery-2.2.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--<script type="text/javascript" src="/static/js/jquery.fullpage.js"></script>-->
+    <script type="text/javascript" src="/static/js/jquery.fullpage.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.uploadify-3.1.min.js"></script>
+    <!--<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js"></script>-->
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+
+
+    <!--Favicon-->
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#fullpage').fullpage({
+                //Navigation
+                menu: '#menu',
+                lockAnchors: false,
+                anchors: ['firstPage', 'secondPage'],
+                navigation: false,
+                navigationPosition: 'right',
+                navigationTooltips: ['firstSlide', 'secondSlide'],
+                showActiveTooltip: false,
+                slidesNavigation: true,
+                slidesNavPosition: 'bottom',
+                //Scrolling
+                css3: true,
+                scrollingSpeed: 700,
+                autoScrolling: true,
+                fitToSection: true,
+                fitToSectionDelay: 1000,
+                scrollBar: false,
+                easing: 'easeInOutCubic',
+                easingcss3: 'ease',
+                loopBottom: false,
+                loopTop: false,
+                loopHorizontal: true,
+                continuousVertical: false,
+                normalScrollElements: '#element1, .element2',
+                scrollOverflow: false,
+                scrollOverflowOptions: null,
+                touchSensitivity: 15,
+                normalScrollElementTouchThreshold: 5,
+                //Accessibility
+                keyboardScrolling: true,
+                animateAnchor: true,
+                recordHistory: true,
+                //Design
+                controlArrows: true,
+                verticalCentered: true,
+                sectionsColor: ['#ccc', '#fff'],
+                paddingTop: '3em',
+                paddingBottom: '10px',
+                fixedElements: '#header, .footer',
+                responsiveWidth: 0,
+                responsiveHeight: 0,
+                //Custom selectors
+                sectionSelector: '.section',
+                slideSelector: '.slide',
+                //events
+                onLeave: function (index, nextIndex, direction) {
+                },
+                afterLoad: function (anchorLink, index) {
+                },
+                afterRender: function () {
+                },
+                afterResize: function () {
+                },
+                afterSlideLoad: function (anchorLink, index, slideAnchor, slideIndex) {
+                },
+                onSlideLeave: function (anchorLink, index, slideIndex, direction, nextSlideIndex) {
+                },
+                sectionsColor: ['#3986c8', '#4BBFC3', '#ffffff', '#7BAABE', '#3986c8'],
+                anchors: ['start-info', 'about-info', 'service-info', 'actual-info', 'contact-info'],
+                menu: '#menu',
+                scrollingSpeed: 950
+            });
+        });
+    </script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>

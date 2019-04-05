@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <title>index</title>
+
+    <!--stylesheet-->
+
+    <link rel="stylesheet" href="static/css/animation.css" />
+    <link rel="stylesheet" href="static/css/jquery.fullPage.css" />
+    <link rel="stylesheet" href="static/css/bootstrap.min.css" />
+    <!--<link rel="stylesheet" href="static/css/bootstrap.cerulean.min.css" />-->
+    <link rel="stylesheet" href="static/css/charisma-app.css" />
+    <link rel="stylesheet" href="static/css/main.css " />
+
+
+    <!--script-->
+    <script src="static/js/jquery-2.2.2.min.js"></script>
+    <!--<script src="js/prefixfree.min.js"></script>-->
+    <!-- This following line is optional. Only necessary if you use the option css3:false and you want to use other easing effects rather than "linear", "swing" or "easeInOutCubic". -->
+    <!--<script src="vendors/jquery.easings.min.js"></script>-->
+    <!-- This following line is only necessary in the case of using the plugin option `scrollOverflow:true` -->
+    <!--script type="text/javascript" src="vendors/scrolloverflow.min.js"></script>-->
+    <script type="text/javascript" src="static/js/jquery.fullPage.js"></script>
+
+
+    <!--Favicon-->
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#fullpage').fullpage({
+                //Navigation
+                menu: '#menu',
+                lockAnchors: false,
+                anchors: ['firstPage', 'secondPage'],
+                navigation: false,
+                navigationPosition: 'right',
+                navigationTooltips: ['firstSlide', 'secondSlide'],
+                showActiveTooltip: false,
+                slidesNavigation: true,
+                slidesNavPosition: 'bottom',
+
+                //Scrolling
+                css3: true,
+                scrollingSpeed: 700,
+                autoScrolling: true,
+                fitToSection: true,
+                fitToSectionDelay: 1000,
+                scrollBar: false,
+                easing: 'easeInOutCubic',
+                easingcss3: 'ease',
+                loopBottom: false,
+                loopTop: false,
+                loopHorizontal: true,
+                continuousVertical: false,
+                normalScrollElements: '#element1, .element2',
+                scrollOverflow: false,
+                scrollOverflowOptions: null,
+                touchSensitivity: 15,
+                normalScrollElementTouchThreshold: 5,
+
+                //Accessibility
+                keyboardScrolling: true,
+                animateAnchor: true,
+                recordHistory: true,
+
+                //Design
+                controlArrows: true,
+                verticalCentered: true,
+                sectionsColor: ['#ccc', '#fff'],
+                paddingTop: '3em',
+                paddingBottom: '10px',
+                fixedElements: '#header, .footer',
+                responsiveWidth: 0,
+                responsiveHeight: 0,
+
+                //Custom selectors
+                sectionSelector: '.section',
+                slideSelector: '.slide',
+
+                //events
+                onLeave: function(index, nextIndex, direction) {},
+                afterLoad: function(anchorLink, index) {},
+                afterRender: function() {},
+                afterResize: function() {},
+                afterSlideLoad: function(anchorLink, index, slideAnchor, slideIndex) {},
+                onSlideLeave: function(anchorLink, index, slideIndex, direction, nextSlideIndex) {},
+
+                sectionsColor: ['#3986c8', '#4BBFC3', '#ffffff', '#7BAABE', '#3986c8'],
+                anchors: ['start-info', 'about-info', 'service-info', 'actual-info', 'contact-info'],
+                menu: '#menu',
+                scrollingSpeed: 950
+            });
+        });
+    </script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<body>
+
+  <nav class="navbar  navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="javascript:void(0)">
+          <img alt="brand" src="static/img/logo.png" />
+        </a>
+      </div>
+
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="javascript:void(0)">登录</a></li>
+          <li><a href="javascript:void(0)">游客</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="#">首页</a></li>
+          <li><a href="javascript:void(0)">新闻公告</a></li>
+          <li><a href="javascript:void(0)">课程浏览</a></li>
+          <li>
+            <a href="javascript:void(0)">本科课程</a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">研究生课程</a>
+          </li>
+        </ul>
+
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div id="fullpage">
+      <div class="section active" id="section0">
+
+        <div class="container">
+          <div class="row">
+            <div class="colr-sm-2 col-md-2 col-lg-2"></div>
+            <div class="loader col-sm-3 col-md-3 col-lg-3" style="margin-left: 0px">
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+                <span class="loader-block"></span>
+            </div>
+            <div class="r-loader col-md-offset-1 col-sm-3 col-md-3 col-lg-3">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+          </div>
+          <div class="colr-sm-2 col-md-2 col-lg-2"></div>
+          <div id="loader-container" class="col-sm-3 col-md-3 col-lg-3"></div>
+        </div>
+
+          <div class="row">
+            <div class="colr-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-sm-3 col-md-3 col-lg-3" style="">
+              <h1 class="text-info" style="font-size:40px;font-weight 400;color:#eeeeee;">
+                多门课程
+              </h1>
+            </div>
+
+            <div class="col-sm-3 col-md-3 col-lg-3" style="margin-left:55px;">
+              <h1 class="text-info" style="font-size:40px;font-weight 400;color:#eeeeee;">
+                师生在线交流
+              </h1>
+            </div>
+
+          <div class="col-sm-3 col-md-3 col-lg-3" style="">
+            <h1 class="text-info" style="font-size:40px;font-weight 400;color:#eeeeee;">
+              热门课程
+            </h1>
+          </div>
+        </div><!--end row-->
+
+        </div>
+
+      </div>
+
+      <div class="container section" id="section1">
+          <h2 class="text-info" style="font-size:40px;font-weight 400;color:#2c2f35;">
+            热门课程
+          </h2>
+          <br /><br />
+          <div class="row">
+            <div class="col-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-sm-10 col-md-3 col-lg-3">
+              <div class="thumbnail">
+                <img src="static/img/math.png" alt="math">
+                <div class="caption">
+                  <h3>工科高等数学</h3>
+                  <p>
+                    <a href="#" class="btn btn-link" role="button">教师:魏光美</a><br />
+                    <a href="#" class="btn btn-link" role="button">2015-2016第1学期</a>
+                  </p>
+                </div>
+              </div><!--end thumbnail-->
+            </div>
+
+              <div class="col-sm-10 col-md-3 col-lg-3">
+                <div class="thumbnail">
+                  <img src="static/img/soft-intro.png" alt="软工导论">
+                  <div class="caption">
+                    <h3>软件工程导论</h3>
+                    <p>
+                      <a href="#" class="btn btn-link" role="button">教师:吕云翔</a><br />
+                      <a href="#" class="btn btn-link" role="button">2015-2016第2学期</a>
+                    </p>
+                  </div>
+                </div><!--end thumbnail-->
+              </div>
+
+              <div class="col-sm-10 col-md-3 col-lg-3">
+                <div class="thumbnail">
+                  <img src="static/img/soft.png" alt="soft">
+                  <div class="caption">
+                    <h3>软件工程过程</h3>
+                    <p>
+                      <a href="#" class="btn btn-link" role="button">教师:林广艳</a><br />
+                      <a href="#" class="btn btn-link" role="button">2015-2016第2学期</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-1 col-md-1 col-lg-1"></div>
+
+          </div><!--end row-->
+
+      </div>
+
+      <div class="container section" id="section2">
+        <h1 class="text-info" style="font-size:40px;font-weight 400;">
+          师生在线交流
+        </h1>
+        <img src="static/img/communicate.png" alt="communicate"/>
+      </div>
+
+      <div class="container section" id="section3">
+        <div class="row">
+          <div class="col-sm-1 col-md-1 col-lg-1"></div>
+          <div class="col-sm-10 col-md-5 col-lg-5" style="color:#fff">
+            <h1>北京航空航天大学软件学院</h1>
+            <p style="line-height:2em">北京航空航天大学软件学院是2002年经国家教育部和国家纪委联合批准成立的全国37所国家示范性软件学院之一。
+              北航软件学院以创办一所能够在一种新的办学机制下，规模培养全面和谐发展的、创新型的、国际化的、
+              市场急需的工程实用性人才的国内一流学院为发展目标，以培养高层次、实用性、复合型、国际化的软件工程专业人才为宗旨，
+              以期为振兴中国软件产业做出贡献，为创建适应行业需求和市场导向的新型办学机制探路，为软件工程高端人才培养做示范，
+              为推进工程教育的改革提供实践经验。
+              学院目前在校本科生634人；在校研究生超过6500人，已向软件行业输送毕业研究生7235人（截止2014年3月）。</p>
+          </div>
+          <div class="col-sm-10 col-md-5 col-lg-5">
+            <img style="width:100%" src="static/img/soft.jpg" alt="BUAA Software Colelge" />
+          </div>
+          <div class="col-sm-1 col-md-1 col-lg-1"></div>
+        </div><!--end row-->
+      </div>
+
+
+      <div class="section fp-auto-height" style="text-align:center" id="section4">
+
+        <div class="intro">
+            <p>
+                Copyright&copy2016 School of Software,BUAA. All Right Reserved 京ICP备05004617号-5
+            </p>
+        </div>
+        <br /><br /><br />
+      </div><!--end footer-->
+  </div><!--end fullPage-->
+
+</body>
+
+</html>

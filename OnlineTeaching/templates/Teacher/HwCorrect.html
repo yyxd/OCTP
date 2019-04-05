@@ -1,0 +1,307 @@
+{% extends "Teacher/index.html" %}
+
+{% block navHwCorrect %}
+    <a class="ajax-link nav-active" href="{% url 'homework_list' cid %}">
+        <i class="glyphicon glyphicon-list-alt"></i><span>作业批改</span>
+    </a>
+{% endblock navHwCorrect %}
+
+{% block teacher %}
+
+
+    <div class="col-sm-10 col-lg-10 content">
+
+        <h3 class="text-primary" style="float: left;">已提交作业列表</h3>
+        <br/>
+        <div class="btn-group" role="group" aria-label="..." style="float: right;">
+            <button class="btn btn-border-radius btn-warning" id="batchSave" onclick="batchSave('chkSon')" style="float: right;margin-left: 10px">修改所选
+            </button>
+            <button class="btn btn-info btn-border-radius" id="batchDownload" onclick="batchDownload('chkSon')" style="float: right;">
+                下载所选
+            </button>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>
+                    <label for="chkAll">全选</label>
+                    <input name="chkAll" id="chkAll" onClick="ChkAllClick('chkSon','chkAll')" type="checkbox" hidden/>
+                    <label for="chkOpposite">反选</label>
+                    <input name="chkOpposite" id="chkOpposite" onClick="ChkOppClick('chkSon')" type="checkbox" hidden/>
+                </th>
+                <th><label>团队/学生</label></th>
+                <th><label>作业文件</label></th>
+                <th><label>提交时间</label></th>
+                <th><label>评分</label></th>
+                <th><label>评语</label></th>
+                <th><label>操作</label></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for submission in submissions %}
+                <tr>
+                    <td>
+                        <input name="chkSon" type="checkbox" value="{{ submission.Path }}"
+                               id="{{ submission.id }}" onclick="ChkSonClick('chkSon','chkAll')"/>
+                    </td>
+                    <td>{{ submission.get_team_or_student_info }}</td>
+                    <td>
+                        <a href="{{ submission.Path }}{{ submission.Name }}">{{ submission.Name }}</a>
+                    </td>
+                    <td>{{ submission.SubmitTime }}</td>
+                    <td>
+                        <input id="score{{ submission.id }}" type="number" step="0.1" min="0"
+                               max="{{ submission.Homework.FullMark }}"
+                               value="{{ submission.Score|default_if_none:"" }}" disabled>
+                    </td>
+                    <td>
+                        <textarea id="comment{{ submission.id }}" rows="1" cols="32"
+                                  disabled>{{ submission.Comment|default_if_none:"" }}</textarea>
+                    </td>
+                    <td>
+                        <button id="btn{{ submission.id }}" class="btn btn-sm btn-warning"
+                                onclick="save({{ submission.id }})">修改
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript" src="/static/js/EdTable.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+        function save(sid) {
+            var scoreInput = $("#score" + sid);
+            var commentInput = $("#comment" + sid);
+            var btn = $("#btn" + sid);
+            var button = $("#batchSave");
+            if (scoreInput.attr("disabled")) {
+                scoreInput.attr("disabled", false);
+                commentInput.attr("disabled", false);
+                commentInput.attr("rows", "2");
+                btn.text("提交");
+                btn.removeClass("btn-warning");
+                btn.addClass("btn-primary");
+                $("#" + sid).click();
+                //$("#" + sid).attr("checked", "checked");
+                //alert($("#" + sid).attr("checked"));
+                button.text("提交所选");
+                button.removeClass("btn-warning");
+                button.addClass("btn-primary");
+                return;
+            }
+            console.log(sid);
+            var submisions = [];
+            var s = {};
+            s.sid = sid;
+            s.score = scoreInput.val();
+            s.comment = commentInput.val();
+            submisions.push(s);
+            console.log(JSON.stringify(submisions));
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            });
+            $.ajax({
+                type: "post",
+                url: "{% url 'mark_homework' cid hid %}",
+                data: {submissions: JSON.stringify(submisions)},
+                success: function (response) {
+                    console.log(response);
+                    var result = response.result;
+                    if (result == 1) {
+                        // TODO
+                        //location.reload();
+                        scoreInput.attr("disabled", true);
+                        commentInput.attr("disabled", true);
+                        commentInput.attr("rows", "1");
+                        btn.text("修改");
+                        btn.removeClass("btn-primary");
+                        btn.addClass("btn-warning");
+                        //$("#" + sid).attr("checked", false);
+                        $("#" + sid).click();
+                        var arrSon = document.getElementsByName("chkSon");
+                        for (var i = 0; i < arrSon.length; i++) {
+                            if (arrSon[i].checked) {
+                                return;
+                            }
+                        }
+                        button.text("修改所选");
+                        button.removeClass("btn-primary");
+                        button.addClass("btn-warning");
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    alert("系统繁忙");
+                }
+            });
+        }
+
+        function batchSave(sonName) {
+            var button = $("#batchSave");
+            var all_submissions = document.getElementsByName(sonName);
+            if (button.text() == "修改所选") {
+                var hasSelected = false;
+                for (var i = 0; i < all_submissions.length; i++) {
+                    if (all_submissions[i].checked) {
+                        hasSelected = true;
+                        sid = all_submissions[i].id;
+                        var scoreInput = $("#score" + sid);
+                        var commentInput = $("#comment" + sid);
+                        commentInput.attr("rows", "2");
+                        var btn = $("#btn" + sid);
+                        scoreInput.attr("disabled", false);
+                        commentInput.attr("disabled", false);
+                        btn.text("提交");
+                        btn.removeClass("btn-warning");
+                        btn.addClass("btn-primary");
+                    }
+                }
+                if (hasSelected) {
+                    button.text("提交所选");
+                    button.removeClass("btn-warning");
+                    button.addClass("btn-primary");
+                }
+                return;
+            }
+            var submisions = [];
+            for (var i = 0; i < all_submissions.length; i++) {
+                if (all_submissions[i].checked) {
+                    var s = {};
+                    sid = all_submissions[i].id;
+                    s.sid = sid;
+                    s.score = $("#score" + sid).val();
+                    s.comment = $("#comment" + sid).val();
+                    submisions.push(s);
+                }
+            }
+            console.log(JSON.stringify(submisions));
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            });
+            $.ajax({
+                type: "post",
+                url: "{% url 'mark_homework' cid hid %}",
+                data: {submissions: JSON.stringify(submisions)},
+                success: function (response) {
+                    console.log(response);
+                    var result = response.result;
+                    if (result == 1) {
+                        // TODO
+                        //location.reload();
+                        for (var i = 0; i < all_submissions.length; i++) {
+                            if (all_submissions[i].checked) {
+                                hasSelected = true;
+                                sid = all_submissions[i].id;
+                                var scoreInput = $("#score" + sid);
+                                var commentInput = $("#comment" + sid);
+                                var btn = $("#btn" + sid);
+                                scoreInput.attr("disabled", true);
+                                commentInput.attr("disabled", true);
+                                commentInput.attr("rows", "1");
+                                btn.text("修改");
+                                btn.removeClass("btn-primary");
+                                btn.addClass("btn-warning");
+                                $("#" + sid).attr("checked", false);
+                            }
+                        }
+                        button.text("修改所选");
+                        button.removeClass("btn-primary");
+                        button.addClass("btn-warning");
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    alert("系统繁忙");
+                }
+            });
+        }
+
+        function ChkAllClick(sonName, cbAllId) {
+            var arrSon = document.getElementsByName(sonName);
+            var cbAll = document.getElementById(cbAllId);
+            var tempState = cbAll.checked;
+            for (var i = 0; i < arrSon.length; i++) {
+                if (arrSon[i].checked != tempState)
+                    arrSon[i].checked = true;
+            }
+        }
+
+        function ChkSonClick(sonName, cbAllId) {
+            var arrSon = document.getElementsByName(sonName);
+            var cbAll = document.getElementById(cbAllId);
+            for (var i = 0; i < arrSon.length; i++) {
+                if (!arrSon[i].checked) {
+                    cbAll.checked = false;
+                    return;
+                }
+            }
+            cbAll.checked = true;
+        }
+
+        function ChkOppClick(sonName) {
+            var arrSon = document.getElementsByName(sonName);
+            for (var i = 0; i < arrSon.length; i++) {
+                arrSon[i].click();
+            }
+        }
+
+        function batchDownload(sonName) {
+            var files = document.getElementsByName(sonName);
+            var index = 0;
+            var fileList = [];
+            console.log(files.length);
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].checked) {
+                    fileList[index++] = files[i].value.slice(0, -1);
+                }
+            }
+            console.log(JSON.stringify(fileList));
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            });
+            $.ajax({
+                type: "post",
+                url: "{% url 'batch_download' %}",
+                data: {
+                    links: JSON.stringify(fileList),
+                    hid:{{ hid }}
+                },
+                success: function (response) {
+                    console.log(response);
+                    var result = response.result;
+                    if (result == 1) {
+                        window.open(response.zipLink, '_self')
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    alert("系统繁忙");
+                }
+            });
+        }
+    </script>
+
+
+
+{% endblock %}

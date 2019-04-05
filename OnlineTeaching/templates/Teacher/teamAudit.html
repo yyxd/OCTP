@@ -1,0 +1,95 @@
+{% extends "Teacher/index.html" %} {% block navTeamAudit %}
+    <a class="ajax-link" href="{% if cid != -1 %}{% url 'team_check' cid %}{% else %}#{% endif %}">
+        <i class="glyphicon glyphicon-ok"></i><span>团队审批</span>
+    </a>
+{% endblock navTeamAudit %}
+
+
+{% block teacher %}
+
+    <!--content-->
+    <div class="col-sm-10 col-lg-10 content">
+        <table class="table table-striped table-bordered table-head-emphasized" id="team-audit-table">
+            <tbody>
+            <tr>
+                <th>团队号</th>
+                <th>团队名</th>
+                <th>团队简介</th>
+                <th>团队负责人</th>
+                <th>团队人数</th>
+                <th>操作</th>
+            </tr>
+            {% for team in teamList %}
+                <tr>
+                    <td>{{ team.id }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.introduction }}</td>
+                    <td>{{ team.teamLeader }}</td>
+                    <td>{{ team.studentCount }}</td>
+                    <td>
+                        {% if team.Status == 2 %}
+                            <p class="text-success">您已同意该团队申请</p>
+                        {% elif team.status == 3 %}
+                            <p class="text-warning">您已拒绝该团队申请</p>
+                        {% else %}
+                            <div class="btn-group" teamId="{{ team.id }}" role="group">
+                                <button class="btn btn-success btn-border-radius is-agree btn-agree">同意</button>
+                                <button class="btn btn-danger btn-border-radius is-agree btn-disagree">不同意</button>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <!--end content-->
+
+    <script>
+        var btnList = document.querySelectorAll(".is-agree");
+        console.log(btnList);
+        var length = btnList.length;
+        console.log(length);
+        for (var i = 0; i < length; i++) {
+            btnList[i].onclick = function () {
+                console.log("clicked");
+                var status=0;
+                status = $(this).hasClass("btn-agree") ? 1 : 0;
+                var row = $(this).parent().parent().parent().index();
+                var teamId = $("#team-audit-table")[0].rows[row].cells[0].innerText;
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{% url "teamCheck" cid %}",
+                    data: {
+                        id: teamId,
+                        type: status,
+                    },
+                    success: function (data) {
+                        var cell = $("#team-audit-table")[0].rows[row].cells[5];
+                        $(cell).children().remove();
+                        console.log(data);
+                        if (data.type == 2) $(cell).append($(" <p class='text-success'>您已同意该团队申请</p>"));
+                        else if (data.type == 3) $(cell).append($(" <p class='text-warning'>您已拒绝该团队申请</p>"));
+                        else
+                            alert(data.message);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.table([{
+                            "错误类型": jqXHR,
+                            "错误信息": textStatus,
+                            "http状态": errorThrown
+                        }]);
+                    }
+                });
+            }
+        }
+    </script>
+
+{% endblock %}

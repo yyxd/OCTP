@@ -1,0 +1,10 @@
+/OnlineTeaching/.idea
+/OnlineTeaching/OnlineTeaching/_pycache
+/logs
+/OnlineTeaching/OnlineTeaching/settings.py
+*.pyc
+/OnlineTeaching/Teacher/migrations
+/OnlineTeaching/media
+/OnlineTeacing/Admin/migrations
+/OnlineTeaching/Student/migrations
+

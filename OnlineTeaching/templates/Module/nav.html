@@ -1,0 +1,57 @@
+<nav class="navbar  navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:void(0)">
+                <img alt="brand" src="/static/img/logo.png"/>
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.session.name %}
+                    {#                    TODO 设置链接 #}
+                    <li><a href="#">{{ request.session.name }}</a></li>
+                    <li><a href="{% url 'logout' %}">登出</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">登录</a></li>
+                {% endif %}
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right" id="nav-links">
+                <!--<li class="active"><a href="{# {% url 'OnlineTeaching.views.index' %} #}">首页</a></li>-->
+              <li><a href="{% url 'index' %}">首页</a></li>
+{#                <!--<li><h1>{{ request.path }}</h1></li>-->#}
+                <li><a href="javascript:void(0)">新闻公告</a></li>
+                <li><a href="javascript:void(0)">课程浏览</a></li>
+                <li>
+                    <a href="javascript:void(0)">本科课程</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">研究生课程</a>
+                </li>
+                {% if request.session.role >= 0 %}
+                    <li>
+                        <a href="
+                                {% if request.session.role == 1 %}{% url "teacher_info" %}{% elif request.session.role == 2 %}{% url 'sIndex' %}{% endif %}">个人中心</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<script>
+    var index = $("#nav-links").children().eq(0);
+    var center = $("#nav-links").children().eq(5);
+    if ("{{ request.path }}" == "/") {
+        if (!index.hasClass("active")) index.addClass("active");
+        if (center.hasClass("active")) center.removeClass("active");
+    }
+
+    else if (("{{ request.path }}" == "/student/") || ("{{ request.path }}" == "/teacher")) {
+        if (!center.hasClass("active")) center.addClass("active");
+        if (index.hasClass("active")) index.removeClass("active");
+    }
+</script>

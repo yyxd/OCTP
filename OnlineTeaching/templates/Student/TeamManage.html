@@ -1,0 +1,406 @@
+{% extends "Student/CourseIndex.html" %} {% block navTeamManage %}
+    <a class="ajax-link nav-active" href="{% url "view_teams" cid %}">
+        <i class="glyphicon glyphicon-edit"></i><span>团队管理</span>
+    </a>
+{% endblock navTeamManage %} {% block course %}
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a href="javascript:void(0)">查看团队</a>
+            </li>
+            <li role="presentation">
+                <a href="javascript:void(0)">创建团队</a>
+            </li>
+            <li role="presentation">
+                <a href="javascript:void(0)">团队审批</a>
+            </li>
+            <li role="presentation">
+                <a href="javascript:void(0)">我的团队</a>
+            </li>
+        </ul>
+    </div>
+    <!--end nav-row-->
+
+    <!-- veiw team row-->
+    <div class="row show col-lg-12" id="view-team-div">
+        <br>
+        {% if teams.length == 0 %}
+            <p>当前课程还没有任何团队哦,赶紧成为第一个创建团队的人吧</p>
+        {% else %}
+            <table class="table table-striped table-bordered table-head-emphasized">
+                <tr>
+                    <th style="width: 10%">团队名称</th>
+                    <th style="width: 10%">队长姓名</th>
+                    <th style="width: 10%">队长学号</th>
+                    <th style="width: 40%">团队介绍</th>
+                    <th style="width: 10%">当前人数</th>
+                    <th style="width: 10%">团队状态</th>
+                    <th style="width: 10%">操作</th>
+                </tr>
+                {% for team in teams %}
+                    <tr>
+                        <td>{{ team.Name }}</td>
+                        <td>{{ team.TeamLeaderName }}</td>
+                        <td>{{ team.TeamLeader_id }}</td>
+                        <td>{{ team.Introduction }}</td>
+                        <td>{{ team.StudentCount }}</td>
+                        <td>{% if team.Status == 0 %} 团队正在创建 {% elif team.Status == 1 %}
+                            团队已提交教师审批 {% elif team.Status == 2 %} 团队教师审批已通过 {% elif my_team.Status == 3 %}团队未通过教师审批 {% endif %}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" teamId="{{ team.id }}"
+                               class="btn-border-radius btn btn-primary btn-apply"
+                                    {% if team.disable %} disabled="disabled" {% endif %}>申请加入
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+    <!--end view team row-->
+
+    <!--audit row-->
+    <div class="row hide col-lg-12" id="audit-div">
+        <br/> {% if can_create_team == False %} {% if is_in_team %}
+        <h3 class="text-warning">您当前课程有已加入团队{{ my_team.Name }}，不能够再创建团队!</h3> {% else %}
+        <h3 class="text-warning">您当前正在申请其他团队,请等待审批</h3> {% endif %} {% else %}
+        <div>
+            <form class="form-horizontal post-form" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="teamName" class="col-sm-2 col-md-2 col-lg-2 control-label">团队名称</label>
+                    <div class=" col-sm-6 col-md-6 col-lg-6">
+                        <input class="form-control" id="teamName" name="teamName" type="text" placeholder="团队名称"
+                               required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="teamIntroduction" class="col-sm-2 col-md-2 col-lg-2 control-label">团队介绍</label>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <textarea class="form-control" id="teamIntroduction" name="teamIntroduction" cols="40" rows="8"
+                                  placeholder="团队介绍" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 col-md-2 col-lg-2"></div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <input class="btn btn-primary" id="createTeam" type="submit" value="创建团队"/>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+        <br/>
+    </div>
+    <!--end audit row-->
+
+    <!--create team row-->
+    <div class="row hide col-lg-12" id="team-div">
+        <br>
+        {% if is_team_leader == True %}
+            <table class="table table-striped table-bordered table-head-emphasized">
+                <tr>
+                    <th>申请人学号</th>
+                    <th>申请人姓名</th>
+                    <th>申请团队名</th>
+                    <th>是否同意加入</th>
+                </tr>
+                {% for applicant in applicants %}
+                    <tr>
+                        <td>{{ applicant.Student_id }}</td>
+                        <td>{{ applicant.Student.Name }}</td>
+                        <td>{{ applicant.Team.Name }}</td>
+                        <td>
+                            {% if applicant.Status == 0 %}
+                                <div class="btn-group" applicantId="{{ applicant.id }}" role="group">
+                                    <button class="btn btn-success btn-border-radius is-agree btn-agree">同意</button>
+                                    <button class="btn btn-danger btn-border-radius is-agree btn-disagree">不同意</button>
+                                </div>
+                            {% elif applicant.Status == 1 %}
+                                <p class="text-success">你已同意加入团队</p>
+                            {% else %}
+                                <p class="text-warning">你已拒绝加入团队</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>当前课程你没有管理的团队</p>
+        {% endif %}
+    </div>
+    <!--end create team row-->
+
+    <!--my team row-->
+    <div class="row hide col-lg-12" id="my-team-div">
+        <br>
+        <label class="text-info" style="margin-left: 10px;">我的团队</label>
+    <input hidden="hidden" id = "my_team_id" value="{{ my_team.id }}">
+        <table class="table table-striped table-bordered table-head-emphasized">
+            <tr>
+                <th style="width: 10%">团队名称</th>
+                <th style="width: 10%">队长姓名</th>
+                <th style="width: 10%">队长学号</th>
+                <th style="width: 40%">团队介绍</th>
+                <th style="width: 10%">当前人数</th>
+                <th style="width: 15%">团队状态</th>
+            </tr>
+
+            <tr>
+                <td>{{ my_team.Name }}</td>
+                <td>{{ my_team.TeamLeader.Name }}</td>
+                <td>{{ my_team.TeamLeader_id }}</td>
+                <td>{{ my_team.Introduction }}</td>
+                <td>{{ my_team.StudentCount }}</td>
+                <td>{% if my_team.Status == 0 %} 团队正在创建 {% elif my_team.Status == 1 %}
+                    团队已提交教师审批 {% elif my_team.Status == 2 %} 团队教师审批已通过 {% elif my_team.Status == 3 %}团队未通过教师审批 {% endif %}
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <label class="text-info" style="margin-left: 10px">组员信息</label>
+        <table class="table table-striped table-bordered table-head-emphasized">
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>邮箱</th>
+                <th>电话</th>
+            </tr>
+            {% for member in members %}
+                <tr>
+                    <td>{{ member.SNo }}</td>
+                    <td>{{ member.Name }}</td>
+                    <td>{{ member.Sex }}</td>
+                    <td>{{ member.Email }}</td>
+                    <td>{{ member.Phone }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+        {% if is_team_leader %}
+            <br>
+            <div id="submitStatus">
+                {% if my_team.Status == 0 %}
+                    <button id="submit-to-teacher" class="btn btn-primary btn-border-radius btn-lg"
+                            style="float: right">
+                        提交教师审批
+                    </button>
+                {% elif my_team.Status == 1 %}
+                    <h4 class='text-info'>已申请至教师提交</h4>
+                {% elif my_team.Status == 2 %}
+                    <h4 class='text-success'>教师申请已通过</h4>
+                {% endif %}
+            </div>
+        {% endif %}
+        <br>
+    </div><!--end my team row-->
+
+    <!--end container-->
+    <script>
+        //$(document).ready(function () {
+        $("#createTeam").click(function () {
+
+            if ($("#teamName").val() == "")
+                return false;
+            else if ($("#teamIntroduction").val() == "")
+                return false;
+            else {
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                var data = {
+                    teamName: $("#teamName").val(),
+                    teamIntroduction: $("#teamIntroduction").val()
+                };
+                $.ajax({
+                    type: "post",
+                    url: "../create/",
+                    data: data,
+                    success: function (response) {
+                        console.log(response);
+                        alert("创建成功");
+                        window.location.reload()
+                    },
+                    error: function (response) {
+                        console.log(response);
+                        alert("系统繁忙");
+                    }
+                });
+                return false;
+            }
+        });
+
+
+        var $viewTeamTab = $(".nav-tabs > li").eq(0);
+        var $auditTab = $(".nav-tabs > li").eq(1);
+        var $createTeamTab = $(".nav-tabs > li").eq(2);
+        var $myTeamTab = $(".nav-tabs > li").eq(3);
+
+        var $viewTeamBlock = $("#view-team-div");
+        var $auditBlock = $("#audit-div");
+        var $createTeamBlock = $("#team-div");
+        var $myTeamBlock = $("#my-team-div");
+
+        $(".nav-tabs > li > a").eq(0)[0].onclick = function () {
+            showBlock($viewTeamTab, $auditTab, $createTeamTab, $myTeamTab, $viewTeamBlock, $auditBlock, $createTeamBlock, $myTeamBlock);
+        }
+        $(".nav-tabs > li > a").eq(1)[0].onclick = function () {
+            showBlock($auditTab, $viewTeamTab, $createTeamTab, $myTeamTab, $auditBlock, $viewTeamBlock, $createTeamBlock, $myTeamBlock);
+        }
+        $(".nav-tabs > li > a").eq(2)[0].onclick = function () {
+            showBlock($createTeamTab, $auditTab, $viewTeamTab, $myTeamTab, $createTeamBlock, $auditBlock, $viewTeamBlock, $myTeamBlock);
+        }
+        $(".nav-tabs > li > a").eq(3)[0].onclick = function () {
+            showBlock($myTeamTab, $auditTab, $createTeamTab, $viewTeamTab, $myTeamBlock, $auditBlock, $createTeamBlock, $viewTeamBlock);
+        }
+
+
+        function showBlock(showTab, hideTab1, hideTab2, hideTab3, showBlock, hideBlock1, hideBlock2, hideBlock3) {
+            if (!showTab.hasClass("active")) {
+                showTab.addClass("active");
+                hideBlock1.removeClass("show");
+                hideBlock2.removeClass("show");
+                hideBlock3.removeClass("show");
+                hideBlock1.addClass("hide");
+                hideBlock2.addClass("hide");
+                hideBlock3.addClass("hide");
+            }
+            if (hideTab1.hasClass("active")) hideTab1.removeClass("active");
+            if (hideTab2.hasClass("active")) hideTab2.removeClass("active");
+            if (hideTab3.hasClass("active")) hideTab3.removeClass("active");
+            if (!showBlock.hasClass("show")) {
+                showBlock.addClass("show");
+            }
+        }
+
+        /*团队申请处理*/
+        var btnApplyList = document.querySelectorAll(".btn-apply");
+        //console.log("applylis length is:"+btnApplyList.length);
+        var length = btnApplyList.length;
+        for (var i = 0; i < length; i++) {
+            btnApplyList[i].onclick = function () {
+
+                /*var cell = $(this).parent();
+                 console.log(cell);
+                 var row = $(cell).parent().index(); //获取点击按钮所在行号
+                 var viewTeamTable=$(".view-team-div > table")[0];*/
+                var btn = event.srcElement;
+                var teamId = btn.teamid;
+                var teamId = btn.getAttribute("teamid");
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "../apply/",
+                    data: {
+                        team_id: teamId
+                    },
+                    success: function (data) {
+                        alert(data.message);
+                        $(this)[0].style.pointerEvents = "none";
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.table([{
+                            "错误类型": jqXHR,
+                            "错误信息": textStatus,
+                            "http状态": errorThrown
+                        }]);
+                    }
+                });
+            }
+        }
+        //});
+
+
+        /*团队审批操作*/
+        //var isAgreeBtnList = $(".btn-is-agree")[0];
+        //var isAgreeBtnList=document.querySelectorAll(".btn-is-agree");
+        var isAgreeBtnList = $(".is-agree");
+
+        var len = isAgreeBtnList.length;
+        console.log("length is:" + len);
+        console.log(isAgreeBtnList);
+        for (var i = 0; i < len; i++) {
+            isAgreeBtnList[i].onclick = function () {
+                var btn = event.srcElement;
+                var status = 0;
+                status = $(btn).hasClass("btn-agree") ? 1 : 0;
+                var row = $(btn).parent().parent().parent().index();
+                var applicantId = $(btn).parent()[0].getAttribute("applicantId");
+                console.log("getting id:" + applicantId);
+                console.log("getting status:" + status);
+                $.ajaxSetup({
+                    dataType: "json",
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "../check/",
+                    data: {
+                        applicant_id: applicantId,
+                        status: status
+                    },
+                    success: function (data) {
+                        //$(this)[0].style.pointerEvents = "none";
+                        //$(this).parent().children().eq(1)[0].style.pointerEvents = "none";
+                        //var tr = $($("#team-div table")[0].rows[row]).remove();
+                        var cell = $("#team-div table")[0].rows[row].cells[3];
+                        $(cell).children().remove();
+                        if (data.type == 1) $(cell).append($(" <p class='text-success'>你已同意加入团队</p>"));
+                        else if (data.type == 2) $(cell).append($(" <p class='text-warning'>你已拒绝加入团队</p>"));
+                        else
+                            alert(data.message);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.table([{
+                            "错误类型": jqXHR,
+                            "错误信息": textStatus,
+                            "http状态": errorThrown
+                        }]);
+                    }
+                });
+
+            }
+        }
+
+        $("#submit-to-teacher").click(function () {
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                }
+            });
+            var data = {
+                team_id: $("#my_team_id").val()
+            };
+            $.ajax({
+                type: "post",
+                url: "../submit/",
+                data: data,
+                success: function (response) {
+                    if (response.status == 0)
+                        $("#submitStatus").html("<h4 class='text-success'>已申请至教师提交</h4>")
+                    else
+                        alert(response.message);
+                },
+                error: function (response) {
+                    console.log(response);
+                    alert("系统繁忙");
+                }
+            });
+            return false;
+        });
+    </script>
+{% endblock course %}

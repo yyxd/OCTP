@@ -1,0 +1,115 @@
+{% extends "Module/main.html" %}
+
+
+{% block title %}学生首页{% endblock title %}
+
+{% block index %}
+    <li><a href="{% url 'OnlineTeaching.views.index' %}">首页</a></li>
+{% endblock index %}
+
+{% block center %}
+    {% if request.session.role >= 0 %}
+        <li class="active">
+            <a href="
+
+                    {% if request.session.role == 1 %}{% url "tIndex" %}{% elif request.session.role == 2 %}{% url 'sIndex' %}{% endif %}">个人中心</a>
+        </li>
+    {% endif %}
+{% endblock center %}
+
+{% block mainbody %}
+
+    <br/>
+    <br/>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left menu starts -->
+            <div class="col-sm-2 col-lg-2">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li class="nav-header">
+                                <a class="ajax-link" href="{% url 'sIndex' %}">
+                                    <i class="glyphicon glyphicon-home"></i><span>我的主页</span>
+                                </a>
+                            </li>
+                            <li>
+                                {% block navHomework %}
+                                    <a class="ajax-link" href="{% url 'view_homeworks' %}">
+                                        <i class="glyphicon glyphicon-eye-open"></i><span>我的作业</span>
+                                    </a>
+                                {% endblock navHomework %}
+                            </li>
+{#                            <li>#}
+{#                                {% block navResources %}#}
+{#                                     <a class="ajax-link" href="{% url 'Student.views.show_courses' %}">#}
+{#                                        <i class="glyphicon glyphicon-eye-open"></i><span>课程资源</span>#}
+{#                                    </a>#}
+{#                                {% endblock navResources %} #}
+{#                            </li>#}
+                            <li>
+                                {% block navInfoModify %}
+                                    <a class="ajax-link" href="{% url 'view_infoModify' %}">
+                                        <i class="glyphicon glyphicon-edit"></i><span>个人信息</span>
+                                    </a>
+                                {% endblock navInfoModify %}
+                            </li>
+{#                            <li>#}
+{#                                {% block navStuCommunicate %}#}
+{#                                    <a class="ajax-link" href="{% url 'communicate' %}">#}
+{#                                        <i class="glyphicon glyphicon-globe"></i><span>在线交流</span>#}
+{#                                    </a>#}
+{#                                {% endblock navStuCommunicate %}#}
+{#                            </li>#}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+            <!-- left menu ends -->
+
+
+            <div class="col-sm-10 col-lg-10 content">
+
+                {% block student %}
+                    <div class="row">
+                        <br><br>
+                        {% for course in courseList %}
+                            <div class="col-sm-offset-1 col-md-offset-1 col-sm-6 col-md-3 col-lg-3">
+                                <div class="thumbnail course" courseId="{{ course.id }}">
+                                    <img src="/static/img/math.png" alt="math">
+                                    <div class="caption">
+                                        <a href="javascript:void(0)"><h3>{{ course.Name }}</h3></a>
+                                        <p>brief introduction of course</p>
+                                        <a href="/student/course/{{ course.id }}/view_resources/"
+                                           class="btn btn-info enter-course"
+                                           course-id="{{ course.id }}">进入课程</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <script>
+                        var courseId;
+                        var courseList = $(".enter-course")[0];
+                        var length = courseList.length;
+                        for (var i = 0; i < length; i++) {
+                            courseList[i].onclick = function () {
+                                courseId = courseList[i].getAttribute("course-id");
+                            }
+                        }
+                    </script>
+
+                {% endblock student %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+{% endblock mainbody %}

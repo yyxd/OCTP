@@ -1,0 +1,101 @@
+{% extends "Admin/index.html" %}
+{% block navStudentSet %}
+    <a class="ajax-link nav-active" href="{% url 'Admin.views.studentsetting' %}">
+        <i class="glyphicon glyphicon-list-alt"></i><span>学生设置</span>
+    </a>
+{% endblock navStudentSet %}
+
+{% block student %}
+
+    <br><br>
+    <form class="form-horizontal" style="margin-left: -120px;">
+        <div class="form-group">
+            <label for="SNO" class="col-sm-2 col-md-10 col-lg-2 control-label">学号</label>
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <input type="text" class="form-control" id="SNO" disabled="true" value="{{ student.SNO }}">
+            </div>
+        </div>
+        <!---end form-gruop-->
+        <div class="form-group">
+            <label for="name" class="col-sm-2 col-md-10 col-lg-2 control-label">姓名</label>
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <input type="text" class="form-control" id="name" disabled="true" value="{{ student.name }}">
+            </div>
+        </div>
+        <!--end form-group-->
+        <div class="form-group">
+            <label for="sex" class="col-sm-2 col-md-10 col-lg-2 control-label">性别</label>
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <input type="text" class="form-control" id="sex" disabled="true" value="{{ student.sex }}">
+            </div>
+        </div>
+        <!--end form-group-->
+        <div class="form-group">
+            <label for="department" class="col-sm-2 col-md-10 col-lg-2 control-label">系别</label>
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <input type="text" class="form-control" id="department" disabled="true"
+                       value="{{ student.department }}">
+            </div>
+        </div>
+        <!--end form-group-->
+        <div class="form-group">
+            <label for="email" class="col-sm-2 col-md-10 col-lg-2 control-label">邮箱</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="email" disabled="true" value="{{ student.email }}">
+            </div>
+        </div>
+        <!--end form-group-->
+        <div class="form-group">
+            <label for="phone" class="col-sm-2 col-md-10 col-lg-2 control-label">电话</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="phone" disabled="true" value="{{ student.phone }}">
+            </div>
+        </div>
+        <!--end form-group-->
+        <br>
+        <div class="form-group">
+            <div class="col-sm-offset-10 col-sm-4 col-md-4 col-lg-4 btn-group">
+                <a class="btn btn-info btn-border-radius" id="info-modify">修改信息</a>
+                <a class="btn btn-info btn-border-radius" id="info-save">保存信息</a>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        $("#info-modify").click(function () {
+            $("#email").removeAttr("disabled");
+            $("#phone").removeAttr("disabled");
+        });
+        $("#info-save").click(function () {
+            var email = $("#email").val();
+            var phone = $("#phone").val();
+            $.ajaxSetup({
+                dataType: "json",
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+            });
+            $.ajax({
+                type: "POST",
+                url: "/student/saveModifyInfo",
+                data: {
+                    Email: email,
+                    Phone: phone,
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == "success") alert("信息修改成功！");
+                    else alert("信息修改失败！");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.table([{
+                        "错误类型": jqXHR,
+                        "错误信息": textStatus,
+                        "http状态": errorThrown
+                    }])
+                }
+            });
+        })
+    </script>
+
+{% endblock student %}

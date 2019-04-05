@@ -1,0 +1,222 @@
+{% extends "Student/index.html" %}
+
+{% block navHomework %}
+    <a class="ajax-link nav-active" href="{% url 'view_homeworks' %}">
+        <i class="glyphicon glyphicon-eye-open"></i><span>我的作业</span>
+    </a>
+{% endblock navHomework %}
+
+{% block student %}
+
+    <h3 class="text-primary">课程作业</h3>
+    <table class="table table-striped table-bordered" id="homework-table">
+        <tbody>
+        <tr>
+            <th>
+                作业ID
+            </th>
+            <th>
+                作业名
+            </th>
+            <th>
+                发布日期
+            </th>
+            <th>
+                开始日期
+            </th>
+            <th>
+                结束日期
+            </th>
+            <th>
+                所属课程
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+        {% for homework in allHomeworks %}
+            <tr {# 未开始的作业 #}
+                    {% if homework.type == 1 %}  class="active"{# 未开始的作业 #}
+                    {% elif homework.type == 2 %} class="success"{# 开始且已提交 #}
+                    {% elif homework.type == 3 %} class="warning"{# 开始但未提交 #}
+                    {% elif homework.type == 4 %}  class="danger"{# 结束未提交 #}
+                    {% elif homework.type == 5 %} class="info"{# 结束已提交 #}
+                   {% endif %}>
+                <td><span class="HwId">{{ homework.id }}</span></td>
+
+                <td> {{ homework.Heading }}</td>
+                <td> {{ homework.InsertTime }}</td>
+                <td> {{ homework.StartTime }}</td>
+                <td> {{ homework.EndTime }}</td>
+
+                <td> {{ homework.courseName }}</td>
+                <td>
+                    {% if homework.type == 1 %} <p class="text-active">未开始</p>{# 未开始的作业 #}
+                    {% elif homework.type == 2 %} <p class="text-success">已提交</p>{# 开始且已提交 #}
+                    {% elif homework.type == 3 %} <p class="text-warning">未提交</p>{# 开始但未提交 #}
+                    {% elif homework.type == 4 %}  <p class="text-danger">已结束</p>{# 结束未提交 #}
+                    {% elif homework.type == 5 %} <p class="text-info">已结束</p>{# 结束已提交 #}
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'view_homework' homework.id  0%}" class="btn btn-link watch-detail">查看详细</a></td>
+                {% empty %}
+                <li>你没有任何作业哟</li>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <!--end homework table ->
+    <!--<div class="container homework-detail" style="display:none">
+        <div class="row">
+            <h3 class="text-primary">作业详情</h3>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">标题</label>
+                <span class="col-lg-7" id="homework-title"></span>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">允许重新提交的方式</label>
+                <span class="col-lg-7">无限制</span>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">接受重新提交，直到</label>
+                <span class="col-lg-7" id="end-date"></span>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">状态</label>
+                <span class="status col-lg-7">进行中</span>
+            </div>
+            <div class="col-lg-10">
+                <label class="text-primary col-lg-3">评分方式</label>
+                <label class="is-comment col-lg-7">未评分</label>
+            </div>
+            <div class="clo-lg-1"></div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <h3 class="text-primary">作业描述</h3>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <p class="description">
+                    这是一段作业描述文本
+                </p>
+            </div>
+            <div class="col-lg-1"></div>
+        </div><!--end description div row ->
+
+     <!--
+        <hr/>
+
+        <div class="row">
+            <h3 class="text-primary">作业提交</h3>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <input type="file" class="" name="resource" value="选择文件">
+                        <label class="file-name">文件名</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" name="upload" value="上传附件"/>
+                        <label class="upload-status">上传成功</label>
+                    </div>
+                    <script>
+                        var btnList = document.querySelectorAll(".watch-detail");
+                        var length = btnList.length;
+                        /*$(".table td").click(function() {
+                         var row = $(this).parent().index() + 1; // 行位置
+                         var col = $(this).index() + 1; // 列位置
+                         alert("当前位置：第"+row+"行，第"+col+"列")
+                         });*/
+                        for (var i = 0; i < length; i++) {
+                            //console.log(btnList[i]);
+                            var btn = btnList[i];
+                            btn.onclick = function () {
+                                var td = $(this).parent();
+                                /*获取点击按钮所在行号列号*/
+                                var row = $(td).parent().index(); // 行位置
+                                var col = $(td).index(); // 列位置
+
+
+                                var NO = $(btn).parents("tr").children("td:nth-child(1)").text();
+                                NO = parseInt(NO);
+                                //console.log(NO);
+                                var hwTable = document.getElementById("homework-table");
+                                hwTable.style.display = "none";
+
+                                var detailArea = $(".homework-detail")[0];
+                                detailArea.style.display = "block";
+
+                                var hwTitle = $("#homework-title")[0];
+                                var endDate = $("#end-date")[0];
+
+                                var tbody = $("#homework-table tbody")[0];
+                                //console.log(hwTitle);
+                                //console.log(tbody.rows[row].cells[3]);
+                                hwTitle.innerHTML = tbody.rows[row].cells[1].innerText;
+                                endDate.innerHTML = tbody.rows[row].cells[3].innerHTML;
+                            }
+                        }
+                    </script>
+                </form>
+            </div>
+        </div>-->
+    <!--</div>-->
+
+    <script>
+        {#        $(document).ready(function () {#}
+        {#            var HwId = $(".HwId").html();#}
+        {#            $.ajaxSetup({#}
+        {#                dataType: "json",#}
+        {#                beforeSend: function (xhr, settings) {#}
+        {#                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');#}
+        {#                }#}
+        {#            });#}
+        {#            $.ajax({#}
+        {#                type: "POST",#}
+        {#                data: HwId,#}
+        {#                url: url,#}
+        {#                success: function (response) {#}
+        {#                    console.log(response);#}
+        {#                    if (response.result == 1) {#}
+        {#                        //修改表格某一行的样式#}
+        {#                    } else {#}
+        {#                        alert(response.error);#}
+        {#                    }#}
+        {#                },#}
+        {#                error: function (response) {#}
+        {#                    console.log(response);#}
+        {#                }#}
+        {#            });#}
+        {#        })#}
+
+    </script>
+
+
+    <style>
+        .style1 {
+            color: black;
+        }
+
+        .style2 {
+            color: greenyellow;
+        }
+
+        .style3 {
+            color: orange;
+        }
+
+        .style4 {
+            color: forestgreen;
+        }
+
+        .style4 {
+            color: orangered;
+        }
+    </style>
+{% endblock student %}

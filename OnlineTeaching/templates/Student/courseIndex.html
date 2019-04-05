@@ -1,0 +1,72 @@
+{% extends "Module/main.html" %}
+
+
+{% block title %}{{ course.Name }}课程首页{% endblock title %}
+
+{% block mainbody %}
+    <br/>
+    <br/>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left menu starts -->
+            <div class="col-sm-2 col-lg-2">
+                <div class="sidebar-nav">
+                    <div class="nav-canvas">
+                        <div class="nav-sm nav nav-stacked">
+                        </div>
+                        <ul class="nav nav-pills nav-stacked main-menu">
+                            <li class="nav-header">
+                                <a class="ajax-link" href="{% url 'sIndex' %}">
+                                    <i class="glyphicon glyphicon-home"></i><span>我的主页</span>
+                                </a>
+                            </li>
+                            <li>
+                                {% block navCourseHomework %}
+                                    <a class="ajax-link" href="{% url "view_course_homeworks" cid %}">
+                                        <i class="glyphicon glyphicon-eye-open"></i><span>课程作业</span>
+                                    </a>
+                                {% endblock navCourseHomework %}
+                            </li>
+                            <li>
+
+                                {% block navCourseResDownload %}
+                                    <a class="ajax-link" href="{% url 'view_resources' cid %}">
+                                        <i class="glyphicon glyphicon-eye-open"></i><span>课程资源</span>
+                                    </a>
+                                {% endblock navCourseResDownload %}
+                            </li>
+                            <li>
+                                {% block navCourseInfo %}
+                                    <a class="ajax-link" href="{% url 'view_course' cid%}">
+                                        <i class="glyphicon glyphicon-edit"></i><span>课程信息</span>
+                                    </a>
+                                {% endblock navCourseInfo %}
+                            </li>
+                        {% if type == 1 %}
+                            <li>
+                                {% block navTeamManage %}
+                                    <a class="ajax-link" href="{% url "view_teams" cid %}">
+                                        <i class="glyphicon glyphicon-th-list"></i><span>团队管理</span>
+                                    </a>
+                                {% endblock navTeamManage %}
+                            </li>
+                        {% endif %}
+                            <li>
+                                {% block navCourseCommunicate %}
+                                    <a class="ajax-link" href="{% url "course_communicate" cid %}">
+                                        <i class="glyphicon glyphicon-globe"></i><span>在线交流</span>
+                                    </a>
+                                {% endblock navCourseCommunicate %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 col-lg-10 content">
+                {% block course %}
+
+                {% endblock course %}
+            </div>
+        </div>
+    </div>
+{% endblock mainbody %}

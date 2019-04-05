@@ -1,0 +1,294 @@
+{% extends "Teacher/index.html" %}
+
+{% block navHwRelease %}
+    <a class="ajax-link nav-active" href="{% url 'assignments' cid %}">
+        <i class="glyphicon glyphicon-list-alt"></i><span>作业管理</span>
+    </a>
+{% endblock navHwRelease %}
+
+{% block teacher %}
+
+    <div class="container-fluid">
+        <div class="col-sm-10 col-lg-10 content">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            <div class="container">
+                <div class="col-sm-10 col-md-10 col-lg-10">
+                    <form class="form-horizontal post-form" id="homeworkDetail">
+                        <input type="hidden" name="cid" value="{{ cid }}"/>
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 col-md-2 col-lg-2 control-label">标题</label>
+                            <div class=" col-sm-6 col-md-6 col-lg-6">
+                                <input class="form-control" id="title" name="title" type="text" maxlength="50"
+                                        {% if not is_publish %} value="{{ assignment.Heading }}" {% endif %} required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type" class="col-sm-2 col-md-2 col-lg-2 control-label">形式</label>
+                            <div class=" col-sm-6 col-md-6 col-lg-6">
+                                <select class="form-control" id="type" name="type" required>
+                                    {#                                   TODO #}
+                                    <option value="个人"
+                                            {% if not is_publish and assignment.Type == '个人' %}selected{% endif %}>个人
+                                    </option>
+                                    {% if course_type == 1 %}
+                                        <option value="团队"
+                                                {% if not is_publish and assignment.Type == '团队' %}selected{% endif %}>
+                                            团队
+                                        </option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullMark" class="col-sm-2 col-md-2 col-lg-2 control-label">满分</label>
+                            <div class=" col-sm-6 col-md-6 col-lg-6">
+                                <input class="form-control" id="fullMark" name="fullMark"
+                                       type="number" step="0.1" maxlength="50" min="0"
+                                       {% if not is_publish %}value="{{ assignment.FullMark }}" {% endif %}/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime" class="col-sm-2 col-md-2 col-lg-2 control-label">开始时间</label>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                {#                              时间的格式是这样的:2012-06-15 14:45#}
+                                <input size="16" type="text" readonly id="startTime" class="form-control"
+                                       {% if not is_publish and assignment.StartTime != None %}value="{{ assignment.StartTime|date:"Y-m-d H:i" }}" {% endif %}>
+                                {#                                <input class="form-control" id="startTime" name="startTime" type="datetime"#}
+                                {#                                       {% if not is_publish and assignment.StartTime != None %}value="{{ assignment.StartTime }}" {% endif %}#}
+                                {#                                       placeholder="YYYY-mm-dd"/>#}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime" class="col-sm-2 col-md-2 col-lg-2 control-label">结束时间</label>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                {#                              时间的格式是这样的:2012-06-15 14:45#}
+                                <input size="16" type="text" readonly id="endTime" class="form-control"
+                                       {% if not is_publish and assignment.EndTime != None %}value="{{ assignment.EndTime|date:"Y-m-d H:i" }}" {% endif %}#}>
+                                {#                                <input class="form-control" id="endTime" name="endTime" type="datetime"#}
+                                {#                                       {% if not is_publish and assignment.EndTime != None %}value="{{ assignment.EndTime }}" {% endif %}#}
+                                {#                                       placeholder="YYYY-mm-dd"/>#}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-sm-2 col-md-2 col-lg-2 control-label">说明</label>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                {% if not is_publish %}
+                                    <textarea class="form-control" id="description" name="description" cols="40"
+                                              rows="8">{{ assignment.Description }}</textarea>
+                                {% else %}
+                                    <textarea class="form-control" id="description" name="description" cols="40"
+                                              rows="8"></textarea>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="attachment" class="col-sm-2 col-md-2 col-lg-2 control-label">附件</label>
+                            <div class="col-sm-5 col-md-5 col-lg-5">
+                                <input class="btn btn-default btn-sm" id="attachment" name="attachment" type="file"
+                                       style="float:left"/>
+                                <button class="btn btn-default btn-sm" id="upload" name="upload" style="float:right;">
+                                    上传
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group" id="tohide"
+                             style="{% if not assignment.AttachmentUrl %}display:none{% endif %}">
+                            <div class="col-sm-2 col-md-2 col-lg-2 control-label"></div>
+                            <div class="col-sm-5 col-md-5 col-lg-5">
+                                <a id="former_attachment" name="former_attachment" style="float:left"
+                                   href="{{ assignment.AttachmentUrl }}">
+                                    {{ assignment.get_attachment_name }}</a>
+                                <button type="button" class="btn btn-default btn-sm" id="delete" name="delete"
+                                        style="float:right">删除
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="center">
+                                    <input class="btn btn-lg btn-primary" type="submit" id="submit" name="submit"
+                                           value="{% if is_publish %}发布{% else %}修改{% endif %}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!--end homework div-->
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var fileName = '{{ assignment.get_attachment_name|default:"" }}';
+
+        $(document).ready(function () {
+            var startDate = null;
+            var endDate = null;
+            $("#startTime").datetimepicker({
+                format: 'yyyy-mm-dd hh:ii',
+                startDate: new Date()
+            }).on('changeDate', function (ev) {
+                startDate = new Date(ev.date.getFullYear(), ev.date.getMonth(), ev.date.getDate(), 0, 0, 0);
+                if (endDate != null && endDate != 'undefined') {
+                    if (endDate < startDate) {
+                        alert("End Date is less than Start Date");
+                        $("#startDate").val("");
+                    }
+                }});
+                $("#endTime").datetimepicker({format: 'yyyy-mm-dd hh:ii',startDate: new Date()}).on("changeDate", function (ev) {
+                    endDate = new Date(ev.date.getFullYear(), ev.date.getMonth(), ev.date.getDate(), 0, 0, 0);
+                    if (startDate != null && startDate != 'undefined') {
+                        if (endDate < startDate) {
+                            alert("End Date is less than Start Date");
+                            $("#endDate").val("");
+                        }
+                    }
+                });
+                $("#upload").click(function () {
+                    if ($("#attachment").val() == "") {
+                        alert("请选择文件");
+                        return false;
+                    }
+                    else {
+                        $.ajaxSetup({
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            }
+                        });
+                        var fileData = new FormData();
+                        {#                TODO 现在只能上传单个文件#}
+                        fileData.append('attachment', $('#attachment')[0].files[0]);
+                        console.log(fileData);
+                        $.ajax({
+                            url: '{% url 'upload_attachments' cid %}',
+                            type: 'POST',
+                            cache: false,
+                            data: fileData,
+                            processData: false,
+                            contentType: false,
+                            async: false,
+                            timeout: 1000,
+                            success: function (response) {
+                                console.log(response);
+                                var result = response.result;
+                                if (result == 1) {
+                                    alert("上传成功");
+                                    fileName = response.fileName;
+                                    $("#former_attachment").html(response.fileName);
+                                    $("#former_attachment").attr("href", response.fileUrl);
+                                    $("#tohide").attr("style", "display:block");
+
+                                } else {
+                                    alert(response.error);
+                                }
+                            },
+                            error: function (response) {
+                                alert("系统繁忙");
+                            }
+                        });
+                        return false;
+                    }
+                });
+                $("#delete").click(function () {
+                    //确认是否删除
+                    var confirmation = confirm('已有附件将被删除，是否确认？');
+                    if (confirmation == true) {
+                        //后台数据删除功能
+                        console.log($("#former_attachment").attr("href"));
+                        $.ajaxSetup({
+                            dataType: "json",
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            }
+                        });
+                        $.ajax({
+                            type: "POST",
+                            async: false,
+                            timeout: 1000,
+                            data: {
+                                aid:{{ aid|default:-1 }},
+                                fileUrl: $("#former_attachment").attr("href")
+                            },
+                            url: '{% url "delete_attachments" cid %}',
+                            success: function (response) {
+                                console.log(response);
+                                if (response.result == 1) {
+                                    fileName = '';
+                                    $("#tohide").attr("style", "display:none");
+                                    $("#former_attachment").html(response.fileName);
+                                    $("#former_attachment").attr("href", "");
+                                } else {
+                                    alert(response.error)
+                                }
+                            },
+                            error: function (response) {
+                                console.log(response.error);
+                            }
+                        });
+                    }
+                });
+                $("#submit").click(function () {
+                    if ($("#title").val() == "") {
+                        alert("标题不能为空");
+                        return false;
+                    }
+                    else if($("#startTime").val() == ""){
+                        alert("开始时间不能为空");
+                        return false;
+                    }
+                    else if($("#endTime").val() == ""){
+                        alert("结束时间不能为空");
+                        return false;
+                    }else if($("#description").val() == ""){
+                        alert("作业描述不能为空");
+                        return false;
+                    }
+                    else {
+                        console.log(fileName);
+                        $.ajaxSetup({
+                            dataType: "json",
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                            }
+                        });
+                        var data = {
+                            title: $("#title").val(),
+                            type: $("#type").val(),
+                            startTime: $("#startTime").val(),
+                            endTime: $("#endTime").val(),
+                            fullMark: $("#fullMark").val(),
+                            description: $("#description").val(),
+                            fileName: fileName
+                        };
+                        console.log(data);
+                        $.ajax({
+                            type: "post",
+                            url: "{% if is_publish %}{% url 'create_assignment' cid %}{% else %}{% url 'update_assignment' cid aid %}{% endif %}",
+                            data: data,
+                            success: function (response) {
+                                console.log(response);
+                                var result = response.result;
+                                if (result == 1) {
+                                    alert("{% if is_publish %}发布{% else %}修改{% endif %}成功");
+                                    window.open("{% url 'assignments' cid %}", "_self");
+                                } else {
+                                    alert(response.error);
+                                }
+                            },
+                            error: function (response) {
+                                console.log(response);
+                                alert("系统繁忙");
+                            }
+                        });
+                        return false;
+                    }
+                });
+
+            })
+    </script>
+{% endblock %}
